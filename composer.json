@@ -1,0 +1,20 @@
+{
+    "name": "mrmojorising/image-proxy",
+    "description": "Composer package to utilise imgproxy open source server for resizing and reformatting remote images.",
+    "type": "library",
+    "license": "mit",
+    "autoload": {
+        "psr-4": {
+            "mrmojorising\\ImageProxy\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dave Hourn"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.4"
+    }
+}
