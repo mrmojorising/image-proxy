@@ -5,7 +5,7 @@ namespace mrmojorising\ImageProxy;
 use mrmojorising\ImageProxy\Helpers\ValidOptions;
 
 /**
- *
+ * @TODO: Class documentation
  */
 class Url extends ImageProxy
 {
