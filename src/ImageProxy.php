@@ -2,6 +2,9 @@
 
 namespace mrmojorising\ImageProxy;
 
+/**
+ * TODO: Class documentation
+ */
 class ImageProxy
 {
     public string $serverHost;

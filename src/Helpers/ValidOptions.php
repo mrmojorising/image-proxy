@@ -2,6 +2,9 @@
 
 namespace mrmojorising\ImageProxy\Helpers;
 
+/**
+ * @TODO: Class documentation
+ */
 class ValidOptions
 {
     public const RESIZING_TYPES = [
