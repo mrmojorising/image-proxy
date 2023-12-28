@@ -12,6 +12,11 @@ class Url extends ImageProxy
     public ?string $freetext = null;
     public ?array $options = null;
 
+    public static function ping()
+    {
+        return 'ping';
+    }
+
     /**
      * @param string $imageUrl
      * @return string
