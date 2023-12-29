@@ -2,6 +2,7 @@
 
 namespace mrmojorising\ImageProxy;
 
+use Base64Url\Base64Url;
 use mrmojorising\ImageProxy\Helpers\ValidOptions;
 
 /**
@@ -12,9 +13,26 @@ class Url extends ImageProxy
     public ?string $freetext = null;
     public ?array $options = null;
 
-    public static function ping()
+    /**
+     * @return string
+     */
+    public static function ping(): string
     {
         return 'ping';
+    }
+
+    /**
+     * @param array $options
+     * @return string|null
+     */
+    public static function optionsToUrl(array $options): ?string
+    {
+        $optionsText = null;
+        foreach ($options as $key => $value) {
+            $optionsText .= $key . ':' . $value . '/';
+        }
+
+        return $optionsText;
     }
 
     /**
@@ -23,11 +41,16 @@ class Url extends ImageProxy
      */
     public function generate(string $imageUrl): string
     {
-        return $imageUrl;
+        $optionsText = self::optionsToUrl($this->options);
+        $securePath = $this->secure ?
+            Base64Url::encode(hash_hmac('sha256', $optionsText . $imageUrl, $this->key, true)) :
+            'insecure';
+
+        return sprintf('%s://%s/%s/%s%s', $this->protocol, $this->serverHost, $securePath, $optionsText, base64_encode($imageUrl));
     }
 
     /**
-     * @param array $imgUrls
+     * @param string[] $imgUrls
      * @return array
      */
     public function generateBatch(array $imgUrls): array
