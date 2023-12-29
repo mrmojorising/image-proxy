@@ -11,7 +11,8 @@ use mrmojorising\ImageProxy\Helpers\ValidOptions;
 class Url extends ImageProxy
 {
     public ?string $freetext = null;
-    public ?array $options = null;
+    public ?array $options = [];
+    public ?array $imageUrls = [];
 
     /**
      * @return string
@@ -22,31 +23,74 @@ class Url extends ImageProxy
     }
 
     /**
-     * @param array $options
-     * @return string|null
+     * @param array $imageUrls
+     * @return $this
      */
-    public static function optionsToUrl(array $options): ?string
+    public function setImageUrls(array $imageUrls): self
     {
-        $optionsText = null;
-        foreach ($options as $key => $value) {
-            $optionsText .= $key . ':' . $value . '/';
-        }
+        $this->imageUrls = $imageUrls;
 
-        return $optionsText;
+        return $this;
     }
 
     /**
      * @param string $imageUrl
-     * @return string
+     * @return $this
      */
-    public function generate(string $imageUrl): string
+    public function setImageUrl(string $imageUrl): self
     {
-        $optionsText = self::optionsToUrl($this->options);
-        $securePath = $this->secure ?
-            Base64Url::encode(hash_hmac('sha256', $optionsText . $imageUrl, $this->key, true)) :
-            'insecure';
+        $this->imageUrls[] = $imageUrl;
 
-        return sprintf('%s://%s/%s/%s%s', $this->protocol, $this->serverHost, $securePath, $optionsText, base64_encode($imageUrl));
+        return $this;
+    }
+
+    /**
+     * @param array $options
+     * @return string|null
+     */
+    public static function optionsToPath(array $options): ?string
+    {
+        $optionsPath = null;
+        foreach ($options as $key => $value) {
+            $optionsPath .= $key . ':' . $value . '/';
+        }
+
+        return $optionsPath;
+    }
+
+    /**
+     * @return string|array
+     */
+    public function generate(): string|array
+    {
+        $urlCount = count($this->imageUrls);
+        if ($urlCount === 0) {
+            return new \Exception('You must provide at least one Url to process');
+        }
+
+        $optionsPath = self::optionsToPath($this->options);
+
+        if ($urlCount === 1) {
+            $imageUrl = $this->imageUrls[0];
+            $securePath = self::securePath($optionsPath, $imageUrl, $this->key);
+
+            return sprintf('%s://%s/%s/%s%s', $this->protocol, $this->serverHost, $securePath, $optionsPath, base64_encode($imageUrl));
+        }
+
+        $imageProxyUrls = [];
+        foreach ($this->imageUrls as $imageUrl) {
+            $securePath = self::securePath($optionsPath, $imageUrl, $this->key);
+            $imageProxyUrls[$imageUrl] = sprintf('%s://%s/%s/%s%s', $this->protocol, $this->serverHost, $securePath, $optionsPath, base64_encode($imageUrl));
+        }
+
+        return $imageProxyUrls;
+    }
+
+    public static function securePath($optionsPath, $imageUrl, $key): string
+    {
+        return $key ?
+            Base64Url::encode(hash_hmac('sha256', $optionsPath . $imageUrl, $key, true)) :
+            'insecure';
     }
 
     /**
