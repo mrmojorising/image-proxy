@@ -27,7 +27,7 @@ class ImageProxy
     ) {
         $this->serverHost = $serverHost;
         $this->protocol = $protocol;
-        if (strlen($this->key) > 0 && strlen($this->salt) > 0) {
+        if (is_string($this->key) && is_string($this->salt)) {
             $this->key = $key;
             $this->salt = $salt;
             $this->secure = true;
