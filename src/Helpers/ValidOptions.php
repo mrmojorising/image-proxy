@@ -31,7 +31,8 @@ class ValidOptions
     ];
 
     public const TRUE = [
-        'l',
+        1,
+        '1',
         't',
         'true',
     ];

@@ -238,7 +238,9 @@ class Url extends ImageProxy
      */
     public function enlarge(string $enlarge): self
     {
-        $this->options['el'] = $enlarge;
+        if (ValidOptions::enlarge($enlarge)) {
+            $this->options['el'] = $enlarge;
+        }
 
         return $this;
     }
@@ -252,7 +254,9 @@ class Url extends ImageProxy
      */
     public function extend(string $extend, string $gravity = null, int $xOffset = 0, int $yOffset = 0): self
     {
-        $this->options['ex'] = $extend;
+        if (ValidOptions::extend($extend)) {
+            $this->options['ex'] = $extend;
+        }
         if (isset($gravity)) {
             $this->gravity($gravity, $xOffset, $yOffset);
         }
