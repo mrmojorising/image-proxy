@@ -10,20 +10,8 @@ use mrmojorising\ImageProxy\Helpers\ValidOptions;
  */
 class Url extends ImageProxy
 {
-    public ?string $freetext = null;
     public ?array $options = [];
     public ?array $imageUrls = [];
-
-    /**
-     * @param array $imageUrls
-     * @return $this
-     */
-    public function setImageUrls(array $imageUrls): self
-    {
-        $this->imageUrls = $imageUrls;
-
-        return $this;
-    }
 
     /**
      * @param string $imageUrl
@@ -32,6 +20,17 @@ class Url extends ImageProxy
     public function setImageUrl(string $imageUrl): self
     {
         $this->imageUrls[] = $imageUrl;
+
+        return $this;
+    }
+
+    /**
+     * @param array $imageUrls
+     * @return $this
+     */
+    public function setImageUrls(array $imageUrls): self
+    {
+        $this->imageUrls = $imageUrls;
 
         return $this;
     }
@@ -86,27 +85,24 @@ class Url extends ImageProxy
     }
 
     /**
-     * @param string[] $imgUrls
-     * @return array
-     */
-    public function generateBatch(array $imgUrls): array
-    {
-        $imgProxyUrls = [];
-
-        foreach ($imgUrls as $imgUrl) {
-            $imgProxyUrls[] = self::generate($imgUrl);
-        }
-
-        return $imgProxyUrls;
-    }
-
-    /**
-     * @param string $freetext
+     * Recommended is to use the helper functions provided, however if used it is
+     * to be provided in format such as ->freetextOptions('w:200/h:300/rt:fill')
+     * Onus is the user to ensure the option keys provided are valid as per ImgProxy documentation
+     *
+     * @param string $freetextOptions
      * @return $this
      */
-    public function freetext(string $freetext): self
+    public function freetextOptions(string $freetextOptions): self
     {
-        $this->freetext = $freetext;
+        $options = explode(separator: '/', string: $freetextOptions);
+        foreach ($options as $option) {
+            if (is_string($option)) {
+                $parsedOption = explode(separator: ':', string: $option);
+                if (count($parsedOption) === 2) {
+                    $this->options[$parsedOption[0]] = $parsedOption[1];
+                }
+            }
+        }
 
         return $this;
     }
