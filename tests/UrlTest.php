@@ -289,7 +289,7 @@ class UrlTest extends TestCase
 
     public function testInsecureHeightSetTwice()
     {
-        // The last usage of resizingType should overwrite any preceding
+        // The last usage of height should overwrite any preceding
         $this->assertEquals(
             expected: [
                 'https://example.com/example1.png' => 'http://localhost:8080/insecure/h:600/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',

@@ -149,6 +149,8 @@ class Url extends ImageProxy
     }
 
     /**
+     * User can provide a float but it will be converted to an integer
+     *
      * @param int $width
      * @return $this
      */
@@ -160,6 +162,8 @@ class Url extends ImageProxy
     }
 
     /**
+     * User can provide a float but it will be converted to an integer
+     *
      * @param int $height
      * @return $this
      */
@@ -171,6 +175,8 @@ class Url extends ImageProxy
     }
 
     /**
+     * User can provide a float but it will be converted to an integer
+     *
      * @param int $minWidth
      * @return $this
      */
@@ -182,6 +188,8 @@ class Url extends ImageProxy
     }
 
     /**
+     * User can provide a float but it will be converted to an integer
+     * 
      * @param int $minHeight
      * @return $this
      */
