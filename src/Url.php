@@ -15,14 +15,6 @@ class Url extends ImageProxy
     public ?array $imageUrls = [];
 
     /**
-     * @return string
-     */
-    public static function ping(): string
-    {
-        return 'ping';
-    }
-
-    /**
      * @param array $imageUrls
      * @return $this
      */

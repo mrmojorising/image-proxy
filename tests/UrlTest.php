@@ -7,33 +7,32 @@ use PHPUnit\Framework\TestCase;
 
 class UrlTest extends TestCase
 {
-    public function testPing()
-    {
-        $this->assertEquals('ping', Url::ping());
-    }
+    private const EXAMPLE_URL_1 = 'https://example.com/example1.png';
+    private const EXAMPLE_URL_2 = 'https://example.com/example2.png';
+    private const EXAMPLE_URL_3 = 'https://example.com/example3.png';
 
-    public function testReturnSameImage()
+    public function testInsecureReturnSameImage()
     {
         $this->assertEquals(
-            'http://localhost:8080/insecure/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlLnBuZw==',
-            (new Url(
+            expected: 'http://localhost:8080/insecure/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+            actual: (new Url(
                 serverHost: 'localhost:8080',
                 protocol: 'http'
             ))
-                ->setImageUrl('https://example.com/example.png')
+                ->setImageUrl(self::EXAMPLE_URL_1)
                 ->generate()
         );
     }
 
-    public function testUrlWithResize()
+    public function testInsecureUrlWithResize()
     {
         $this->assertEquals(
-            'http://localhost:8080/insecure/rt:fill/w:200/h:300/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlLnBuZw==',
-            (new Url(
+            expected: 'http://localhost:8080/insecure/rt:fill/w:200/h:300/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+            actual: (new Url(
                 serverHost: 'localhost:8080',
                 protocol: 'http'
             ))
-                ->setImageUrl('https://example.com/example.png')
+                ->setImageUrl(self::EXAMPLE_URL_1)
                 ->resize([
                     'width' => 200,
                     'height' => 300,
@@ -42,43 +41,43 @@ class UrlTest extends TestCase
         );
     }
 
-    public function testWithMultipleUrlsUsingSetImageUrl()
+    public function testInsecureWithMultipleUrlsUsingSetImageUrl()
     {
         $this->assertEquals(
-            [
-                'https://example.com/example.png' => 'http://localhost:8080/insecure/rt:fill/w:200/h:300/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlLnBuZw==',
-                'https://example.com/example1.png' => 'http://localhost:8080/insecure/rt:fill/w:200/h:300/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
-            ],
-            (new Url(
-                serverHost: 'localhost:8080',
-                protocol: 'http'
-            ))
-                ->setImageUrl('https://example.com/example.png')
-                ->setImageUrl('https://example.com/example1.png')
-                ->resize([
-                    'width' => 200,
-                    'height' => 300,
-                    'resizingType' => 'fill',
-                ])->generate()
-        );
-    }
-
-    public function testWithMultipleUrlsUsingSetImageUrls()
-    {
-        $this->assertEquals(
-            [
-                'https://example.com/example.png' => 'http://localhost:8080/insecure/rt:fill/w:200/h:300/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlLnBuZw==',
+            expected: [
                 'https://example.com/example1.png' => 'http://localhost:8080/insecure/rt:fill/w:200/h:300/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
                 'https://example.com/example2.png' => 'http://localhost:8080/insecure/rt:fill/w:200/h:300/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
             ],
-            (new Url(
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrl(self::EXAMPLE_URL_1)
+                ->setImageUrl(self::EXAMPLE_URL_2)
+                ->resize([
+                    'width' => 200,
+                    'height' => 300,
+                    'resizingType' => 'fill',
+                ])->generate()
+        );
+    }
+
+    public function testInsecureWithMultipleUrlsUsingSetImageUrls()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/rt:fill/w:200/h:300/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/rt:fill/w:200/h:300/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/rt:fill/w:200/h:300/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
                 serverHost: 'localhost:8080',
                 protocol: 'http'
             ))
                 ->setImageUrls([
-                    'https://example.com/example.png',
-                    'https://example.com/example1.png',
-                    'https://example.com/example2.png',
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
                 ])->resize([
                     'width' => 200,
                     'height' => 300,
@@ -87,22 +86,22 @@ class UrlTest extends TestCase
         );
     }
 
-    public function testAllResizingOptions()
+    public function testInsecureAllResizingOptions()
     {
         $this->assertEquals(
-            [
-                'https://example.com/example.png' => 'http://localhost:8080/insecure/rt:fit/w:300/h:300/ex:1/el:1/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlLnBuZw==',
+            expected: [
                 'https://example.com/example1.png' => 'http://localhost:8080/insecure/rt:fit/w:300/h:300/ex:1/el:1/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
                 'https://example.com/example2.png' => 'http://localhost:8080/insecure/rt:fit/w:300/h:300/ex:1/el:1/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/rt:fit/w:300/h:300/ex:1/el:1/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
             ],
-            (new Url(
+            actual: (new Url(
                 serverHost: 'localhost:8080',
                 protocol: 'http'
             ))
                 ->setImageUrls([
-                    'https://example.com/example.png',
-                    'https://example.com/example1.png',
-                    'https://example.com/example2.png',
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
                 ])->resize([
                     'width' => 300,
                     'height' => 300,
@@ -113,22 +112,22 @@ class UrlTest extends TestCase
         );
     }
 
-    public function testSizeOptions()
+    public function testInsecureSizeOptions()
     {
         $this->assertEquals(
-            [
-                'https://example.com/example.png' => 'http://localhost:8080/insecure/w:500/h:500/el:t/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlLnBuZw==',
+            expected: [
                 'https://example.com/example1.png' => 'http://localhost:8080/insecure/w:500/h:500/el:t/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
                 'https://example.com/example2.png' => 'http://localhost:8080/insecure/w:500/h:500/el:t/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/w:500/h:500/el:t/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
             ],
-            (new Url(
+            actual: (new Url(
                 serverHost: 'localhost:8080',
                 protocol: 'http'
             ))
                 ->setImageUrls([
-                    'https://example.com/example.png',
-                    'https://example.com/example1.png',
-                    'https://example.com/example2.png',
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
                 ])->size([
                     'width' => 500,
                     'height' => 500,
