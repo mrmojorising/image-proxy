@@ -245,6 +245,71 @@ class UrlTest extends TestCase
         );
     }
 
+    public function testInsecureWidth()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/w:400/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/w:400/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/w:400/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->width(400)
+                ->generate()
+        );
+    }
+
+    public function testInsecureWidthRoundingInteger()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/w:380/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/w:380/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/w:380/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->width(380.8)
+                ->generate()
+        );
+    }
+
+    public function testInsecureWidthSetTwice()
+    {
+        // The last usage of width should overwrite any preceding
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/w:600/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/w:600/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/w:600/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->width(400)
+                ->width(600)
+                ->generate()
+        );
+    }
+
     public function testInsecureHeight()
     {
         $this->assertEquals(
@@ -266,7 +331,7 @@ class UrlTest extends TestCase
         );
     }
 
-    public function testInsecureHeightInvalidOption()
+    public function testInsecureHeightRoundingInteger()
     {
         $this->assertEquals(
             expected: [
