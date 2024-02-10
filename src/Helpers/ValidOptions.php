@@ -47,6 +47,15 @@ class ValidOptions
     }
 
     /**
+     * @param float $zoom
+     * @return bool
+     */
+    public static function zoom(float $zoom): bool
+    {
+        return $zoom > 0;
+    }
+
+    /**
      * @param string $enlarge
      * @return bool
      */

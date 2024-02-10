@@ -201,17 +201,20 @@ class Url extends ImageProxy
     }
 
     /**
-     * @param int $zoomXY
-     * @param int $zoomX
-     * @param int $zoomY
+     * @param float $zoomXY
+     * @param float|null $zoomY
      * @return $this
      */
-    public function zoom(int $zoomXY = 0, int $zoomX = 0, int $zoomY = 0): self
+    public function zoom(float $zoomXY, ?float $zoomY = null): self
     {
-        if (isset($zoomXY)) {
+        if (ValidOptions::zoom($zoomXY)) {
             $this->options['z'] = $zoomXY;
-        } elseif (isset($zoomX) && isset($zoomY)) {
-            $this->options['z'] = sprintf('%d:%d', $zoomX, $zoomY);
+
+            if (isset($zoomY) && ValidOptions::zoom($zoomY)) {
+                $this->options['z'] = sprintf('%.2f:%.2f', $zoomXY, $zoomY);
+            } elseif (isset($zoomY)) {
+                unset($this->options['z']);
+            }
         }
 
         return $this;

@@ -155,31 +155,6 @@ class UrlTest extends TestCase
         );
     }
 
-    public function testInsecureSizeOptions()
-    {
-        $this->assertEquals(
-            expected: [
-                'https://example.com/example1.png' => 'http://localhost:8080/insecure/w:500/h:500/el:t/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
-                'https://example.com/example2.png' => 'http://localhost:8080/insecure/w:500/h:500/el:t/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
-                'https://example.com/example3.png' => 'http://localhost:8080/insecure/w:500/h:500/el:t/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
-            ],
-            actual: (new Url(
-                serverHost: 'localhost:8080',
-                protocol: 'http'
-            ))
-                ->setImageUrls([
-                    self::EXAMPLE_URL_1,
-                    self::EXAMPLE_URL_2,
-                    self::EXAMPLE_URL_3,
-                ])->size([
-                    'width' => 500,
-                    'height' => 500,
-                    'enlarge' => 't', // valid values are 1, '1', 't', 'true' or boolean true
-                    'extend' => 'g', // should ignore as valid values are 1, '1', 't', 'true' or boolean true
-                ])->generate()
-        );
-    }
-
     public function testInsecureResizingType()
     {
         $this->assertEquals(
@@ -242,6 +217,31 @@ class UrlTest extends TestCase
                 ])->resizingType('fill-down')
                 ->resizingType('fit')
                 ->generate()
+        );
+    }
+
+    public function testInsecureSizeOptions()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/w:500/h:500/el:t/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/w:500/h:500/el:t/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/w:500/h:500/el:t/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->size([
+                    'width' => 500,
+                    'height' => 500,
+                    'enlarge' => 't', // valid values are 1, '1', 't', 'true' or boolean true
+                    'extend' => 'g', // should ignore as valid values are 1, '1', 't', 'true' or boolean true
+                ])->generate()
         );
     }
 
@@ -371,6 +371,220 @@ class UrlTest extends TestCase
                     self::EXAMPLE_URL_3,
                 ])->height(400)
                 ->height(600)
+                ->generate()
+        );
+    }
+
+    public function testInsecureMinWidth()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/mw:400/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/mw:400/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/mw:400/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->minWidth(400)
+                ->generate()
+        );
+    }
+
+    public function testInsecureMinWidthRoundingInteger()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/mw:380/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/mw:380/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/mw:380/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->minWidth(380.8)
+                ->generate()
+        );
+    }
+
+    public function testInsecureMinWidthSetTwice()
+    {
+        // The last usage of minWidth should overwrite any preceding
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/mw:600/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/mw:600/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/mw:600/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->minWidth(400)
+                ->minWidth(600)
+                ->generate()
+        );
+    }
+
+    public function testInsecureMinHeight()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/mh:400/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/mh:400/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/mh:400/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->minHeight(400)
+                ->generate()
+        );
+    }
+
+    public function testInsecureMinHeightRoundingInteger()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/mh:380/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/mh:380/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/mh:380/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->minHeight(380.8)
+                ->generate()
+        );
+    }
+
+    public function testInsecureMinHeightSetTwice()
+    {
+        // The last usage of minHeight should overwrite any preceding
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/mh:600/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/mh:600/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/mh:600/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->minHeight(400)
+                ->minHeight(600)
+                ->generate()
+        );
+    }
+
+    public function testInsecureZoom()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/z:1.4/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/z:1.4/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/z:1.4/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->zoom(1.4)
+                ->generate()
+        );
+    }
+
+    public function testInsecureZoomInvalidParameter()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->zoom(-3)
+                ->generate()
+        );
+    }
+
+    public function testInsecureZoomYParameter()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/z:1.40:0.85/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/z:1.40:0.85/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/z:1.40:0.85/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->zoom(1.4, 0.85)
+                ->generate()
+        );
+    }
+
+    public function testInsecureZoomInvalidYParameter()
+    {
+        $this->assertEquals(
+            expected: [
+                'https://example.com/example1.png' => 'http://localhost:8080/insecure/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMS5wbmc=',
+                'https://example.com/example2.png' => 'http://localhost:8080/insecure/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMi5wbmc=',
+                'https://example.com/example3.png' => 'http://localhost:8080/insecure/aHR0cHM6Ly9leGFtcGxlLmNvbS9leGFtcGxlMy5wbmc=',
+            ],
+            actual: (new Url(
+                serverHost: 'localhost:8080',
+                protocol: 'http'
+            ))
+                ->setImageUrls([
+                    self::EXAMPLE_URL_1,
+                    self::EXAMPLE_URL_2,
+                    self::EXAMPLE_URL_3,
+                ])->zoom(1.4, -4)
                 ->generate()
         );
     }
