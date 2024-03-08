@@ -123,6 +123,10 @@ class Url extends ImageProxy
         return $this;
     }
 
+    /**
+     * @param array $options
+     * @return $this
+     */
     public function size(array $options): self
     {
         $availableOptions = ['width', 'height', 'extend', 'enlarge'];
@@ -145,6 +149,18 @@ class Url extends ImageProxy
             $this->options['rt'] = $resizingType;
         }
 
+        return $this;
+    }
+
+    /**
+     * @param string $resizingAlgorithm
+     * @return $thiss
+     */
+    public function resizingAlgorithm(string $resizingAlgorithm): self
+    {
+        if (ValidOptions::resizingAlgorithm($resizingAlgorithm)) {
+            $this->options['ra'] = $resizingAlgorithm;
+        }
         return $this;
     }
 
@@ -221,21 +237,23 @@ class Url extends ImageProxy
     }
 
     /**
-     * @param int $dpr
+     * @param float $dpr
      * @return $this
      */
-    public function dpr(int $dpr): self
+    public function dpr(float $dpr): self
     {
-        $this->options['dpr'] = $dpr;
+        if (ValidOptions::dpr($dpr)) {
+            $this->options['dpr'] = $dpr;
+        }
 
         return $this;
     }
 
     /**
-     * @param string $enlarge
+     * @param string|int $enlarge
      * @return $this
      */
-    public function enlarge(string $enlarge): self
+    public function enlarge(string|int $enlarge): self
     {
         if (ValidOptions::enlarge($enlarge)) {
             $this->options['el'] = $enlarge;
@@ -245,13 +263,13 @@ class Url extends ImageProxy
     }
 
     /**
-     * @param string $extend
+     * @param string|int $extend
      * @param string|null $gravity
      * @param int $xOffset
      * @param int $yOffset
      * @return $this
      */
-    public function extend(string $extend, string $gravity = null, int $xOffset = 0, int $yOffset = 0): self
+    public function extend(string|int $extend, string $gravity = null, int $xOffset = 0, int $yOffset = 0): self
     {
         if (ValidOptions::extend($extend)) {
             $this->options['ex'] = $extend;
@@ -282,14 +300,154 @@ class Url extends ImageProxy
 
     /**
      * @param string $gravity
-     * @param int $xOffset
-     * @param int $yOffset
+     * @param float $xOffset
+     * @param float $yOffset
      * @return $this
      */
-    public function gravity(string $gravity, int $xOffset = 0, int $yOffset = 0): self
+    public function gravity(string $gravity, float $xOffset = 0, float $yOffset = 0): self
     {
         if (ValidOptions::gravity($gravity)) {
-            $this->options['g'] = sprintf('%s:%d:%d', $gravity, $xOffset, $yOffset);
+            if (!ValidOptions::gravityOffset($xOffset)) {
+                $xOffset = 0;
+            }
+            if (!ValidOptions::gravityOffset($yOffset)) {
+                $yOffset = 0;
+            }
+            $this->options['g'] = sprintf('%s:%.2f:%.2f', $gravity, $xOffset, $yOffset);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param float $width
+     * @param float $height
+     * @param string|null $gravity
+     * @return $this
+     */
+    public function crop(float $width, float $height, string $gravity = null): self
+    {
+        if (!ValidOptions::crop($width)) {
+            $width = 0;
+        }
+        if (!ValidOptions::crop($height)) {
+            $height = 0;
+        }
+        if (ValidOptions::gravity($gravity)) {
+            $this->options['c'] = sprintf('%.2f:%.2f:%s', $width, $height, $gravity);
+        } else {
+            $this->options['c'] = sprintf('%.2f:%.2f', $width, $height);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $threshold
+     * @param string|null $colour
+     * @param string|int|null $equalHorizontal
+     * @param string|int|null $equalVertical
+     * @return $this
+     */
+    public function trim(
+        $threshold,
+        string $colour = null,
+        string|int $equalHorizontal = null,
+        string|int $equalVertical = null): self
+    {
+        if (!ValidOptions::trimEqual($equalHorizontal)) {
+            $equalHorizontal = false;
+        }
+        if (!ValidOptions::trimEqual($equalVertical)) {
+            $equalVertical = false;
+        }
+
+        $this->options['t'] = sprintf('%s:%s:%s:%s', $threshold, $colour, $equalHorizontal, $equalVertical);
+
+        return $this;
+    }
+
+    /**
+     * @param int $top
+     * @param int $right
+     * @param int $bottom
+     * @param int $left
+     * @return $this
+     */
+    public function padding(int $top, int $right = 0, int $bottom = 0, int $left = 0)
+    {
+        if (!ValidOptions::padding($left)) {
+            $left = $right;
+        }
+        if (!ValidOptions::padding($bottom)) {
+            $bottom = $top;
+        }
+        if (!ValidOptions::padding($right)) {
+            $right = $top;
+            $left = $top;
+        }
+        $this->options['pd'] = sprintf('%s:%s:%s:%s', $top, $right, $bottom, $left);
+
+        return $this;
+    }
+
+    /**
+     * @param string|int $autoRotate
+     * @return $this
+     */
+    public function autoRotate(string|int $autoRotate): self
+    {
+        if (ValidOptions::autoRotate($autoRotate)) {
+            $this->options['ar'] = $autoRotate;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param int $rotate
+     * @return $this
+     */
+    public function rotate(int $rotate): self
+    {
+        if (ValidOptions::rotate($rotate)) {
+            $this->options['rot'] = $rotate;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param int $red
+     * @param int $green
+     * @param int $blue
+     * @return $this
+     */
+    public function backgroundRGB(int $red = 0, int $green = 0, int $blue = 0): self
+    {
+        if (!ValidOptions::backgroundRGB($red)) {
+            $red = 0;
+        }
+        if (!ValidOptions::backgroundRGB($green)) {
+            $green = 0;
+        }
+        if (!ValidOptions::backgroundRGB($blue)) {
+            $blue = 0;
+        }
+
+        $this->options['bg'] = sprintf('%d:%d:%d', $red, $green, $blue);
+
+        return $this;
+    }
+
+    /**
+     * @param string $hexColour
+     * @return $this
+     */
+    public function backgroundHex(string $hexColour)
+    {
+        if (ValidOptions::backgroundHex($hexColour)) {
+            $this->options['bg'] = $hexColour;
         }
 
         return $this;
