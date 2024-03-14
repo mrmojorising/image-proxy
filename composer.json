@@ -5,7 +5,8 @@
     "license": "mit",
     "autoload": {
         "psr-4": {
-            "mrmojorising\\ImageProxy\\": "src/"
+            "mrmojorising\\ImageProxy\\": "src/",
+            "mrmojorising\\ImageProxy\\tests": "tests/"
         }
     },
     "authors": [
@@ -15,7 +16,8 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": ">=8.0"
+        "php": ">=8.0",
+        "spomky-labs/base64url": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5"
