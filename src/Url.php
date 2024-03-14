@@ -441,13 +441,120 @@ class Url extends ImageProxy
     }
 
     /**
-     * @param string $hexColour
+     * @param string $backgroundHexColour
      * @return $this
      */
-    public function backgroundHex(string $hexColour)
+    public function backgroundHex(string $backgroundHexColour): self
     {
-        if (ValidOptions::backgroundHex($hexColour)) {
-            $this->options['bg'] = $hexColour;
+        if (ValidOptions::backgroundHex($backgroundHexColour)) {
+            $this->options['bg'] = $backgroundHexColour;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param float $backgroundAlpha
+     * @return self
+     */
+    public function backgroundAlpha(float $backgroundAlpha = 0): self
+    {
+        if (ValidOptions::backgroundAlpha($backgroundAlpha)) {
+            $this->options['bga'] = $backgroundAlpha;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array $options
+     * @return $this
+     */
+    public function adjust(array $options = []): self
+    {
+        $availableOptions = ['brightness', 'contrast', 'saturation'];
+        foreach ($availableOptions as $availableOption) {
+            if (isset($options[$availableOption])) {
+                $this->{$availableOption}($options[$availableOption]);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param int $brightness
+     * @return $this
+     */
+    public function brightness(int $brightness): self
+    {
+        if (ValidOptions::brightness($brightness)) {
+            $this->options['br'] = $brightness;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param float $contrast
+     * @return $this
+     */
+    public function contrast(float $contrast): self
+    {
+        if (ValidOptions::contrast($contrast)) {
+            $this->options['co'] = $contrast;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param float $saturation
+     * @return $this
+     */
+    public function saturation(float $saturation): self
+    {
+        if (ValidOptions::saturation($saturation)) {
+            $this->options['sa'] = $saturation;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param float $blur
+     * @return $this
+     */
+    public function blur(float $blur): self
+    {
+        if (ValidOptions::blur($blur)) {
+            $this->options['bl'] = $blur;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param float $sharpen
+     * @return $this
+     */
+    public function sharpen(float $sharpen): self
+    {
+        if (ValidOptions::sharpen($sharpen)) {
+            $this->options['sh'] = $sharpen;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param float $pixelate
+     * @return $this
+     */
+    public function pixelate(float $pixelate): self
+    {
+        if (ValidOptions::pixelate($pixelate)) {
+            $this->options['pix'] = $pixelate;
         }
 
         return $this;

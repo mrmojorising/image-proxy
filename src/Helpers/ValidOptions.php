@@ -182,11 +182,74 @@ class ValidOptions
     }
 
     /**
-     * @param string $hexColour
+     * @param string $backgroundHexColour
      * @return bool
      */
-    public static function backgroundHex(string $hexColour): bool
+    public static function backgroundHex(string $backgroundHexColour): bool
     {
-        return preg_match('^#([a-f0-9]{6}|[a-f0-9]{3})\b$', $hexColour);
+        return preg_match('^#([a-f0-9]{6}|[a-f0-9]{3})\b$', $backgroundHexColour);
+    }
+
+    /**
+     * @param float $backgroundAlpha
+     * @return bool
+     */
+    public static function backgroundAlpha(float $backgroundAlpha): bool
+    {
+        return $backgroundAlpha >= 0 && $backgroundAlpha <= 1;
+    }
+
+    /**
+     * @param int $brightness
+     * @return bool
+     */
+    public static function brightness(int $brightness): bool
+    {
+        return $brightness >= -255 && $brightness <= 255;
+    }
+
+    /**
+     * @param float $contrast
+     * @return bool
+     */
+    public static function contrast(float $contrast): bool
+    {
+        return $contrast >= 1;
+    }
+
+    /**
+     * @param float $saturation
+     * @return bool
+     */
+    public static function saturation(float $saturation): bool
+    {
+        return $saturation >= 1;
+    }
+
+    /**
+     * @param float $blur
+     * @return bool
+     */
+    public static function blur(float $blur): bool
+    {
+        return $blur > 0;
+    }
+
+    /**
+     * @param float $sharpen
+     * @return bool
+     */
+    public static function sharpen(float $sharpen): bool
+    {
+        return $sharpen > 0;
+    }
+
+    /**
+     * @param int $pixelate
+     * @return bool
+     */
+    public static function pixelate(int $pixelate): bool
+    {
+        return $pixelate > 0;
     }
 }
