@@ -299,6 +299,7 @@ class Url extends ImageProxy
     }
 
     /**
+     * @TODO: Handle special gravities smart, object and focus point
      * @param string $gravity
      * @param float $xOffset
      * @param float $yOffset
@@ -470,7 +471,7 @@ class Url extends ImageProxy
      * @param array $options
      * @return $this
      */
-    public function adjust(array $options = []): self
+    public function adjust(array $options): self
     {
         $availableOptions = ['brightness', 'contrast', 'saturation'];
         foreach ($availableOptions as $availableOption) {
@@ -556,6 +557,36 @@ class Url extends ImageProxy
         if (ValidOptions::pixelate($pixelate)) {
             $this->options['pix'] = $pixelate;
         }
+
+        return $this;
+    }
+
+    /**
+     * @param array $options
+     * @return $this
+     */
+    public function unsharpMasking(array $options): self
+    {
+        $availableOptions = ['mode', 'weight', 'divider'];
+        $defaultOptions = [
+            'mode' => 'auto',
+            'weight' => 1,
+            'divider' => 24,
+        ];
+        foreach ($availableOptions as $availableOption) {
+            if (!isset($options[$availableOption]) ||
+                ValidOptions::unsharpMasking($availableOption, $options[$availableOption])
+            ) {
+                $options[$availableOption] = $defaultOptions[$availableOption];
+            }
+        }
+
+        $this->options['ush'] = sprintf(
+            '%s:%s:%s',
+            $options['mode'],
+            $options['weight'],
+            $options['divider']
+        );
 
         return $this;
     }

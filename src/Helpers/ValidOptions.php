@@ -48,6 +48,12 @@ class ValidOptions
         270,
     ];
 
+    public const UNSHARP_MASKING_MODE = [
+        'auto',
+        'none',
+        'always',
+    ];
+
     public const TRUE = [
         1,
         '1',
@@ -251,5 +257,44 @@ class ValidOptions
     public static function pixelate(int $pixelate): bool
     {
         return $pixelate > 0;
+    }
+
+    /**
+     * @param string $option
+     * @param mixed $value
+     * @return bool
+     */
+    public static function unsharpMasking(string $option, mixed $value): bool
+    {
+        $methodName = 'unsharpMasking' . ucFirst($option);
+
+        return self::{$methodName}($value);
+    }
+
+    /**
+     * @param string $mode
+     * @return bool
+     */
+    public static function unsharpMaskingMode(string $mode): bool
+    {
+        return in_array($mode, self::UNSHARP_MASKING_MODE);
+    }
+
+    /**
+     * @param float $weight
+     * @return bool
+     */
+    public static function unsharpMaskingWeight(float $weight): bool
+    {
+        return $weight > 0;
+    }
+
+    /**
+     * @param float $divider
+     * @return bool
+     */
+    public static function unsharpMaskingDivider(float $divider): bool
+    {
+        return $divier > 0;
     }
 }
